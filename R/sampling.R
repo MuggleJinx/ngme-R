@@ -58,7 +58,6 @@ sample_post_M <- function(
 # }
  
 
-
 sample_post_W <- function(A, K, mu, sigma, sigma_e, V, Y, h, tol = 1e-8) {
   n <- length(Y)
   inv_SV <- Matrix::diag(1 / (sigma^2 * V))

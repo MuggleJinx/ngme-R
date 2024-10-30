@@ -29,7 +29,7 @@ simulation_ar1 <- function(
   )
   ar1_model
 
-  s <- ngme2::simulate(ar1_model, seed = seed, nsim = 1)
+  s <- simulate(ar1_model, seed = seed, nsim = 1)
   V <- attr(s, "V")[[1]]
   W <- s[[1]]
 

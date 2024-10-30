@@ -7,7 +7,7 @@ traceplot <- function(
   sigma, 
   nu, 
   sigma_e,
-  main = "Title"
+  main = NULL
 ) {
   compute_ylim <- function(x) {
     ylow <- if (min(x) > 0) 0.9 * min(x) else 1.1 * min(x)
@@ -37,11 +37,13 @@ traceplot <- function(
   abline(h = rho, col = "red")
 
   # Add a single title for the entire plot
-  mtext(main, side = 3, outer = TRUE, line = -2, cex = 1.5)
+  if (!is.null(main)) {
+    mtext(main, side = 3, outer = TRUE, line = -2, cex = 1.5)
+  }
 }
 
 
-traceplot_ggplot <- function(est, rho, mu, sigma, nu, sigma_e, main = "Title") {
+traceplot_ggplot <- function(est, rho, mu, sigma, nu, sigma_e, main = NULL) {
   library(ggplot2)
   library(patchwork)
 
@@ -84,8 +86,11 @@ traceplot_ggplot <- function(est, rho, mu, sigma, nu, sigma_e, main = "Title") {
     theme_minimal()
 
   # Combine the plots into a 3x2 grid and add a single title
-  combined_plot <- (plot_mu | plot_sigma) / (plot_nu | plot_sigma_e) / (plot_rho | plot_spacer()) +
-    plot_annotation(title = main)
+  combined_plot <- (plot_mu | plot_sigma) / (plot_nu | plot_sigma_e) / (plot_rho | plot_spacer())
+
+  if (!is.null(main)) {
+    combined_plot <- combined_plot + plot_annotation(title = main)
+  }
 
   # Print the combined plot
   print(combined_plot)
@@ -120,7 +125,7 @@ convert_noise <- function(noise, nu, h) {
 traceplot_df <- function(
   rho_df, mu_df, sigma_df, nu_df, sigma_e_df, 
   true_rho, true_mu, true_sigma, true_nu, true_sigma_e,
-  main = "Title"
+  main = NULL
 ) {
   library(ggplot2)
   library(patchwork)
@@ -171,13 +176,17 @@ traceplot_df <- function(
   legend_only_plot <- ggdraw() + draw_grob(legend_plot)
 
   # Combine the plots into a 3x2 grid and add a single title
-  combined_plot <- (plot_rho | plot_mu) / (plot_sigma | plot_nu) / (plot_sigma_e | legend_only_plot) +
-    plot_annotation(
-      title = main,
+  combined_plot <- (plot_rho | plot_mu) / (plot_sigma | plot_nu) / (plot_sigma_e | legend_only_plot) 
+
+  if (!is.null(main)) {
+    combined_plot <- combined_plot +
+      plot_annotation(
+        title = main,
       theme = theme(
         plot.title = element_text(size = 15, hjust = 0.5)  # hjust = 0.5 centers the title
+        )
       )
-    )
+  }
 
   # Print the combined plot
   return(combined_plot)
