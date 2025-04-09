@@ -25,7 +25,7 @@ main_test <- function(
   niter = 1000, 
   n_chain = 4,
   true_params = list(rho=0.5, mu=-3, sigma=4, nu=nu, sigma_e=1),
-  start_params = list(rho=0, mu=-3, sigma=4, nu=1, sigma_e=0.5),
+  start_params = list(rho=0, mu=0, sigma=1, nu=1, sigma_e=0.5),
   lr = 0.01,
   n_gibbs = 5,
   nburn = 100,
@@ -78,6 +78,7 @@ main_test <- function(
     true_V = if (!sampling) sim$V else NULL,
     true_W = if (!sampling) sim$W else NULL
   )
+  print("after estimation")
 
   # print results
   print(paste("Noise=", noise, ", nu=", nu, ", mode=", mode))
@@ -92,7 +93,7 @@ main_test <- function(
   } else {
     NULL
   }
-
+  print("before traceplot")
   plot <- traceplot_df( 
     true_rho = true_params$rho, 
     true_mu = true_params$mu, 
@@ -108,12 +109,13 @@ main_test <- function(
 
     main = main
   )
-  plot
+  print(plot)
 
   # save plot
   filename <- paste0(noise, "-nu=", nu, "-", mode, ".png")
   filename <- paste0("Figures/", method, "/", filename)
 
+  print("before ggsave")
   ggsave(
     plot=plot, 
     filename=filename,
@@ -121,70 +123,68 @@ main_test <- function(
   )
 }
 
-
 #########################
 # GAL model
 #########################
 
-
-# MC, gal, nu=0.5
-for (mode in c("centered", "non-centered")) { 
-  main_test(
-    nu = 0.5, 
-    noise = "gal", 
-    mode = mode,
-    sampling = TRUE, 
-    niter = 3000, 
-    RB = FALSE, 
-    n_chain = 4,
-    n_gibbs = 20,
-    plot_title = FALSE,
-    seed = 32
-  )
-}
+# MC, gal, nu=0.3
+# for (mode in c("centered", "non-centered")) { 
+#   main_test(
+#     n_obs = 300,
+#     nu = 1,
+#     noise = "nig",
+#     mode = "centered",
+#     sampling = FALSE,
+#     niter = 1000,
+#     RB = FALSE,
+#     n_gibbs = 5,
+#     plot_title = FALSE,
+#     seed = 32
+#   )
+# }
 
 # MC, gal, nu=2
-for (mode in c("centered", "non-centered")) { 
-  main_test(
-    nu = 2, 
-    noise = "gal", 
-    mode = mode,
-    sampling = TRUE, 
-    niter = 3000, 
-    RB = FALSE, 
-    n_chain = 4,
-    plot_title = FALSE,
-    seed = 32
-  )
-}
+# for (mode in c("centered", "non-centered")) { 
+#   main_test(
+#     nu = 2, 
+#     noise = "gal", 
+#     mode = mode,
+#     sampling = TRUE, 
+#     niter = 3000, 
+#     RB = FALSE, 
+#     n_chain = 4,
+#     plot_title = FALSE,
+#     seed = 32
+#   )
+# }
 
 # RB, gal, nu=2
-system.time({
-  for (mode in c("centered", "non-centered")) { 
-  main_test(
-    nu = 2, 
-    noise = "gal", 
-    mode = mode,
-    sampling = TRUE, 
-    niter = 3000, 
-    RB = TRUE, 
-    n_chain = 4,
-    plot_title = FALSE,
-    seed = 32
-    )
-  }
-})
+# system.time({
+#   for (mode in c("centered", "non-centered")) { 
+#   main_test(
+#     nu = 2, 
+#     noise = "gal", 
+#     mode = mode,
+#     sampling = TRUE, 
+#     niter = 3000, 
+#     RB = TRUE, 
+#     n_chain = 4,
+#     plot_title = FALSE,
+#     seed = 32
+#     )
+#   }
+# })
 
 
 # RB, gal, nu=0.5
 system.time({
-  for (mode in c("centered", "non-centered")) { 
+  for (mode in c("centered")) { 
   main_test(
-    nu = 0.5, 
+    nu = 0.4, 
     noise = "gal", 
     mode = mode,
     sampling = TRUE, 
-    niter = 3000, 
+    niter = 2000, 
     RB = TRUE, 
     n_chain = 4,
     plot_title = FALSE,
@@ -192,3 +192,21 @@ system.time({
     )
   }
 })
+
+
+# random test 
+# for (mode in c("centered", "non-centered")) { 
+#   main_test(
+#     nu = 2.1, 
+#     noise = "nig", 
+#     mode = mode,
+#     # sampling = TRUE, 
+#     sampling = FALSE, 
+#     niter = 1000, 
+#     RB = TRUE, 
+#     n_chain = 4,
+#     n_gibbs = 5,
+#     plot_title = TRUE,
+#     seed = 32
+#   )
+# }

@@ -81,6 +81,8 @@ estimation <- function(
   sampling = FALSE,
   fix_params = c(rho=FALSE, mu=FALSE, sigma=FALSE, nu=FALSE, sigma_e=FALSE)
 ) {
+  stopifnot(mode == "centered" || mode == "non-centered")
+
   # adam parameters
   beta1 <- 0.9
   beta2 <- 0.999
@@ -217,8 +219,21 @@ if (!sampling) n_gibbs <- 1
 }
 
 multi_chain_estimation <- function(n_chain, ...) {
-  ret <- parallel::mclapply(1:n_chain, function(i) estimation(...), mc.cores = parallel::detectCores())
+  set.seed(123)
   
+  seeds <- sample.int(1e6, n_chain)
+  
+  ret <- parallel::mclapply(1:n_chain, function(i) {
+    set.seed(seeds[i])
+    estimation(...)
+  }, mc.cores = parallel::detectCores())
+  
+  # for loop version
+  # ret <- list()
+  # for (i in 1:n_chain) {
+  #   set.seed(seeds[i])
+  #   ret[[i]] <- estimation(...)
+  # }
   
   # Combine results
   rho_df     <- do.call(cbind, lapply(ret, function(x) x$rho))

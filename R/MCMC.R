@@ -78,6 +78,9 @@ V[iter-1, ]
 
   # which_lag acf is less than threshold
   lag = which(acf(V[,1], lag.max = 1000, plot=FALSE)$acf < threshold)[1];
+  if (is.na(lag)) {
+    stop("lag is NA")
+  }
 
   # Remove the burnins
   V = V[-seq_len(nburnin), ,drop = FALSE]
@@ -98,7 +101,8 @@ compare_MC_MCMC <- function(
   h=1, sigma=1,
   niter = 10^6, nburnin=5000,
   xlim = c(0, 5),
-  print_var="b"
+  print_var="b",
+  threshold = 0.01
 ) {
 
   # hist(rgig(5000, p, a, b), breaks = 50, freq=F,
@@ -115,8 +119,10 @@ compare_MC_MCMC <- function(
     h  = h,
     sigma = sigma,
     niter = niter,
-    nburnin = nburnin
+    nburnin = nburnin,
+    threshold = threshold
   )[["V_ind"]]
+  print(paste0("Effective sample size: ", length(V_samples_ind) / niter))
 
   V_filtered <- V_samples_ind[V_samples_ind < xlim[2]]
 
