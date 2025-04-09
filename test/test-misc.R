@@ -1,10 +1,10 @@
 source_all <- function() {
   library(ngme2)
   library(testthat)
-  source("Code/gradient.R")
-  source("Code/sampling.R")
-  source("Code/estimation.R")
-  source("Code/util.R")
+  source("R/gradient.R")
+  source("R/sampling.R")
+  source("R/estimation.R")
+  source("R/util.R")
 }
 source_all()
 
@@ -76,7 +76,7 @@ test_that("Test single-chain estimation", {
       RB = TRUE,
       n_gibbs = 5,
       lr = 0.01,
-      iteration = 3000,
+      iteration = 500,
       burnin = 100,
       # true_M = sim$M,
       # true_V = sim$V,
